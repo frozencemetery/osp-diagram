@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage[margin=1in]{geometry}
+\pagestyle{empty}
+\usepackage[utf8]{inputenc}
+\usepackage[parfill]{parskip}
+\lefthyphenmin=64
+
+\usepackage{hyperref}
+
+\usepackage{pgf}
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes}
+
+\newcommand{\br}[3]{ \\*
+  \mbox{\textbf{@:} #1} \\*
+  \mbox{\textbf{name:} #2} \\*
+  \mbox{\textbf{branch:} #3}
+}
+
+\newcommand{\TODO}{???}
+
+\newcommand{\ro}{\href{https://review.openstack.org}{review.openstack.org}}
+\newcommand{\osg}{\href{https://github.com/openstack}{github/openstack}}
+\newcommand{\mgmt}{\href{https://github.com/rdo-management}{github/rdo-management}}
+\newcommand{\rhos}{\href{https://github.com/redhat-openstack}{github/redhat-openstack}}
+\newcommand{\fed}{\href{http://pkgs.fedoraproject.org}{fedoraproject}}
+
+\begin{document}
+\center
+
+\tikzstyle{blob} = [draw=none, rectangle, rounded corners, text width=13em]
+\tikzstyle{line} = [draw, very thick, color=black]
+\begin{tikzpicture}[->, >=stealth', auto, node distance=4.5cm, semithick]
+  \node[blob,fill=purple] (C) [] {New code \br{\ro}{\%s}{(various)}};
+  \node[blob,fill=yellow] (M) [below left of=C] {OpenStack
+    \br{\osg}{\%s}{master}};
+  \node[blob,fill=green] (O) [below of=M] {OpenStack 
+    \br{\osg}{\%s}{kilo (ex)}};
+  \node[blob,fill=orange] (MPK) [below left of=O] {Management Midstream
+    \br{\mgmt}{\%s-packaging}{master}};
+  \node[blob,fill=orange] (Mid) [below right of=O] {Management Midstream
+    \br{\mgmt}{\%s}{master}};
+  \node[blob,fill=blue] (RDO) [below of=Mid] {RDO release
+    \br{\rhos}{\%s}{\TODO}};
+  \node[blob,fill=blue] (RDOp) [below of=MPK] {RDO packaging
+    \br{\fed}{openstack-\%s}{\TODO}};
+  \node[blob,fill=red] (RHOS) [below of=RDO] {RHEL OSP
+    \br{\TODO}{\TODO}{\TODO}};
+  \node[blob,fill=red] (RHOSp) [below of=RDOp] {RHEL OSP Packaging
+    \br{\TODO}{\TODO}{\TODO}};
+
+  \path [line] (C) -> node [left] {Gerrit\ \ \ \ \ } (M);
+  \path [line] (M) -> node [] {Branching} (O);
+  \path [line] (O) -> node [left] {Packaging\ \ \ \ \ } (MPK);
+  \path [line,<->] (O) -> node [right] {\ \ \ \ \ Eventual consistency} (Mid);
+  \path [line] (Mid) -> node [] {} (RDO);
+  \path [line] (RDO) -> node [] {} (RHOS);
+  \path [line] (MPK) -> node [] {} (RDOp);
+  \path [line] (RDOp) -> node [] {} (RHOSp);
+\end{tikzpicture}
+\end{document}
